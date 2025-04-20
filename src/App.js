@@ -1,14 +1,14 @@
 import logo from "./logo.svg";
 import "./App.css";
 
-import IconButtons from "./TestComponent";
+import Header from "./components/header";
 
 import axios from "axios";
 
 function App() {
   return (
     <div className="App">
-      <IconButtons />
+      <Header />
     </div>
   );
 }
