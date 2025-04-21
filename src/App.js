@@ -26,8 +26,10 @@ import Header from "./components/header";
 import axios from "axios";
 
 // Utilities
-import getCharacteristicImage from "./utility/characteristicsMap";
+// import getCharacteristicImage from "./utility/characteristicsMap";
 import AutocompleteSearchBar from "./components/AutocompleteSearchBar";
+import ItemStatsCard from "./components/ItemStatsCard";
+import ItemRecipeCard from "./components/ItemRecipeCard";
 
 // API URL
 const Dofus3AllEquipment = `https://api.dofusdu.de/dofus3/v1/en/items/equipment/all`;
@@ -148,187 +150,9 @@ function App() {
         </div>
         {/* ==== Combo Box Search Section ==== */}
 
-        {/* Item Card */}
-        <Box
-          sx={{
-            // minWidth: 275,
-            width: "100%",
-            marginTop: "20px",
-            boxShadow: "0px 0px 10px 0px rgba(0, 0, 0, 0.5)",
-          }}
-        >
-          <Card
-            variant="outlined"
-            sx={{ backgroundColor: "#1a1a1a", color: "white" }}
-          >
-            <CardContent>
-              <div>
-                <Typography
-                  gutterBottom
-                  sx={{ fontSize: 14, color: "lightcyan" }}
-                >
-                  {selectedEquipmentData?.name}
-                </Typography>
-                <Typography gutterBottom sx={{ color: "red", fontSize: 12 }}>
-                  {selectedEquipmentData?.type?.name}
-                </Typography>
-                <div>
-                  <img
-                    src={selectedEquipmentData?.image_urls.sd}
-                    alt={selectedEquipmentData?.name}
-                    style={{ width: "100px", height: "100px" }}
-                  />
-                </div>
-              </div>
-              <div>
-                <div
-                  // variant="body2"
-                  sx={{
-                    // columnCount: 2, // how many columns
-                    columnGap: 2, // space between columns (theme units)
-                    // optional: balance content better
-                    // columnFill: "auto",
-                  }}
-                >
-                  {selectedEquipmentData?.effects.map((effect) => (
-                    // add image for the characteristic
+        <ItemStatsCard item={selectedEquipmentData} />
 
-                    <Stack
-                      direction="row"
-                      spacing={1}
-                      key={effect.type.id}
-                      style={{
-                        marginBottom: "10px",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                      }}
-                    >
-                      {String(effect.formatted).length > 50 ? null : (
-                        <img
-                          src={getCharacteristicImage(effect.type.name)}
-                          alt={effect.type.name}
-                          style={{ width: "20px", height: "20px" }}
-                        />
-                      )}
-
-                      <Typography
-                        variant="body2"
-                        key={effect.type.id}
-                        style={{
-                          color:
-                            String(effect.formatted).length > 50
-                              ? "white"
-                              : String(effect.formatted).includes("-")
-                              ? "lightcoral"
-                              : "lightgreen",
-                        }}
-                      >
-                        {effect.formatted}
-                      </Typography>
-                    </Stack>
-                  ))}
-                </div>
-              </div>
-            </CardContent>
-            {/* <CardActions>
-              <Button size="small">Learn More</Button>
-            </CardActions> */}
-          </Card>
-        </Box>
-        {/* ==== Item Card ==== */}
-
-        {/* Recipes Card */}
-        <Box
-          sx={{
-            // minWidth: 275,
-            width: "100%",
-            marginTop: "20px",
-            boxShadow: "0px 0px 10px 0px rgba(0, 0, 0, 0.5)",
-          }}
-        >
-          <Card
-            variant="outlined"
-            sx={{ backgroundColor: "#1a1a1a", color: "white" }}
-          >
-            <CardContent>
-              <div>
-                <Typography
-                  gutterBottom
-                  sx={{ fontSize: 14, color: "lightcyan" }}
-                >
-                  {selectedEquipmentData?.name}
-                </Typography>
-                <Typography gutterBottom sx={{ color: "red", fontSize: 12 }}>
-                  {selectedEquipmentData?.type?.name}
-                </Typography>
-                <div>
-                  <img
-                    src={selectedEquipmentData?.image_urls.sd}
-                    alt={selectedEquipmentData?.name}
-                    style={{ width: "100px", height: "100px" }}
-                  />
-                </div>
-              </div>
-              <div>
-                <div>
-                  {selectedEquipmentData?.recipe?.map((resource) => {
-                    let resourceData = data.allResources.find(
-                      (res) => res.ankama_id === resource.item_ankama_id
-                    );
-                    if (resourceData === undefined) {
-                      // try to search for the resource in the allEquipmentData array
-                      resourceData = data.allEquipment.find(
-                        (res) => res.ankama_id === resource.item_ankama_id
-                      );
-                    }
-                    // TODO: if resourceData still undefined, search for consumables as part of the recipe
-                    return resourceData === undefined ? (
-                      <Typography
-                        key={resource?.item_ankama_id}
-                        variant="body1"
-                        style={{ color: "red" }}
-                      >
-                        {"Unknown Resource"} x{" "}
-                        <span style={{ color: "lightsalmon" }}>
-                          {resource.quantity}
-                        </span>
-                      </Typography>
-                    ) : (
-                      <Stack
-                        direction="row"
-                        spacing={1}
-                        key={resource?.item_ankama_id}
-                        style={{
-                          marginBottom: "10px",
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                        }}
-                      >
-                        <img
-                          src={resourceData?.image_urls.sd}
-                          alt={resourceData?.name}
-                          style={{ width: "20px", height: "20px" }}
-                        />
-                        <Typography variant="body1">
-                          {resourceData?.name} x{" "}
-                          <span style={{ color: "lightsalmon" }}>
-                            {resource.quantity}
-                          </span>
-                        </Typography>
-                      </Stack>
-                    );
-                  })}
-                </div>
-              </div>
-            </CardContent>
-            {/* <CardActions>
-              <Button size="small">Learn More</Button>
-            </CardActions> */}
-          </Card>
-        </Box>
-        {/* ==== Recipes Card ==== */}
+        <ItemRecipeCard item={selectedEquipmentData} data={data} />
       </Container>
     </div>
   );
