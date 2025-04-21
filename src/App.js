@@ -307,6 +307,7 @@ function App() {
                         (res) => res.ankama_id === resource.item_ankama_id
                       );
                     }
+                    // TODO: if resourceData still undefined, search for consumables as part of the recipe
                     return resourceData === undefined ? (
                       <Typography
                         key={resource?.item_ankama_id}
