@@ -11,8 +11,11 @@ export default function ItemRecipeCard({ item, data }) {
     <Box
       sx={{
         // minWidth: 275,
-        width: "100%",
+        // width: "40%",
         marginTop: "20px",
+        marginLeft: "20px",
+        marginRight: "20px",
+        marginBottom: "20px",
         boxShadow: "0px 0px 10px 0px rgba(0, 0, 0, 0.5)",
       }}
     >
