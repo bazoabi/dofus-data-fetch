@@ -29,7 +29,8 @@ import axios from "axios";
 import getCharacteristicImage from "./utility/characteristicsMap";
 
 // Cancel Axios
-let cancelAxios = null;
+let cancelAllEquipmentAxios = null;
+let cancelAllResourcesCallAxios = null;
 
 function App() {
   const [allEquipmentData, setAllEquipmentData] = useState([]);
@@ -38,6 +39,7 @@ function App() {
   const [selectedInputEquipmentName, setSelectedInputEquipmentName] =
     useState("");
   const [selectedEquipmentData, setSelectedEquipmentData] = useState(null);
+  const [allResourcesData, setAllResourcesData] = useState([]);
 
   // Fetch data from the API
   useEffect(() => {
@@ -53,7 +55,7 @@ function App() {
 
         cancelToken: new axios.CancelToken(function (cancel) {
           // An executor function receives a cancel function as a parameter
-          cancelAxios = cancel; // Assign the cancel function to the variable
+          cancelAllEquipmentAxios = cancel; // Assign the cancel function to the variable
         }),
       })
       .then(function (response) {
@@ -68,6 +70,28 @@ function App() {
         );
         console.log("Equipment Names: ", equipmentNamesResponse);
         setEquipmentNames(equipmentNamesResponse);
+
+        // TODO: Fetch All Resources Data
+        axios
+          .get(`https://api.dofusdu.de/dofus3/v1/en/items/resources/all`, {
+            params: {
+              // "filter[min_level]": 190,
+              // "filter[max_level]": 200,
+              // "filter[type.name_id]": "",
+            },
+            cancelToken: new axios.CancelToken(function (cancel) {
+              cancelAllResourcesCallAxios = cancel;
+            }),
+          })
+          .then(function (response) {
+            console.log("success: ", response);
+            setAllResourcesData(response.data.items);
+          })
+          .catch(function (error) {
+            console.log("error: ", error);
+          });
+
+        // End Fetch All Resources Data
       })
       .catch(function (error) {
         // handle error
@@ -76,8 +100,15 @@ function App() {
 
     // Cleanup function to cancel the request if the component unmounts
     return () => {
-      if (cancelAxios) {
-        cancelAxios("Request canceled due to component unmounting.");
+      if (cancelAllEquipmentAxios) {
+        cancelAllEquipmentAxios(
+          "Request canceled due to component unmounting."
+        );
+      }
+      if (cancelAllResourcesCallAxios) {
+        cancelAllResourcesCallAxios(
+          "Request canceled due to component unmounting."
+        );
       }
     };
   }, []);
@@ -231,6 +262,80 @@ function App() {
           </Card>
         </Box>
         {/* ==== Item Card ==== */}
+
+        {/* Recipes Card */}
+        <Box
+          sx={{
+            // minWidth: 275,
+            width: "100%",
+            marginTop: "20px",
+            boxShadow: "0px 0px 10px 0px rgba(0, 0, 0, 0.5)",
+          }}
+        >
+          <Card
+            variant="outlined"
+            sx={{ backgroundColor: "#1a1a1a", color: "white" }}
+          >
+            <CardContent>
+              <div>
+                <Typography
+                  gutterBottom
+                  sx={{ fontSize: 14, color: "lightcyan" }}
+                >
+                  {selectedEquipmentData?.name}
+                </Typography>
+                <Typography gutterBottom sx={{ color: "red", fontSize: 12 }}>
+                  {selectedEquipmentData?.type?.name}
+                </Typography>
+                <div>
+                  <img
+                    src={selectedEquipmentData?.image_urls.sd}
+                    alt={selectedEquipmentData?.name}
+                    style={{ width: "100px", height: "100px" }}
+                  />
+                </div>
+              </div>
+              <div>
+                <div>
+                  {selectedEquipmentData?.recipe.map((resource) => {
+                    const resourceData = allResourcesData.find(
+                      (res) => res.ankama_id === resource.item_ankama_id
+                    );
+                    return (
+                      <Stack
+                        direction="row"
+                        spacing={1}
+                        key={resource?.item_ankama_id}
+                        style={{
+                          marginBottom: "10px",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                        }}
+                      >
+                        <img
+                          src={resourceData?.image_urls.sd}
+                          alt={resourceData?.name}
+                          style={{ width: "20px", height: "20px" }}
+                        />
+                        <Typography variant="body1">
+                          {resourceData?.name} x{" "}
+                          <span style={{ color: "lightsalmon" }}>
+                            {resource.quantity}
+                          </span>
+                        </Typography>
+                      </Stack>
+                    );
+                  })}
+                </div>
+              </div>
+            </CardContent>
+            {/* <CardActions>
+              <Button size="small">Learn More</Button>
+            </CardActions> */}
+          </Card>
+        </Box>
+        {/* ==== Recipes Card ==== */}
       </Container>
     </div>
   );

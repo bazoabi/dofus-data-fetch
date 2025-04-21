@@ -5,6 +5,9 @@ export default function Header() {
   const style = {
     width: "70%",
     height: "70%",
+    // bring it more to the top
+    marginTop: "-3vh",
+    marginBottom: "-3vh",
   };
 
   return <img style={style} src={dofusLogo} alt="Dofus Logo" />;
