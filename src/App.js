@@ -6,22 +6,8 @@ import { useEffect, useState } from "react";
 
 // Material UI
 import Container from "@mui/material/Container";
-import TextField from "@mui/material/TextField";
-import Autocomplete from "@mui/material/Autocomplete";
-
 import Box from "@mui/material/Box";
-import Card from "@mui/material/Card";
-import CardActions from "@mui/material/CardActions";
-import CardContent from "@mui/material/CardContent";
-import Button from "@mui/material/Button";
-import Typography from "@mui/material/Typography";
-
-import Stack from "@mui/material/Stack";
-import Divider from "@mui/material/Divider";
-
 import Grid from "@mui/material/Grid";
-import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
-import ArrowForwardOutlinedIcon from "@mui/icons-material/ArrowForwardOutlined";
 import TrendingFlatOutlinedIcon from "@mui/icons-material/TrendingFlatOutlined";
 
 // Components
@@ -41,17 +27,28 @@ const Dofus3AllEquipment = `https://api.dofusdu.de/dofus3/v1/en/items/equipment/
 const Dofus3AllResources = `https://api.dofusdu.de/dofus3/v1/en/items/resources/all`;
 const Dofus3AllConsumables = `https://api.dofusdu.de/dofus3/v1/en/items/consumables/all`;
 
+const DofusBetaAllEquipment = `https://api.dofusdu.de/dofus3beta/v1/en/items/equipment/all`;
+const DofusBetaAllResources = `https://api.dofusdu.de/dofus3beta/v1/en/items/resources/all`;
+const DofusBetaAllConsumables = `https://api.dofusdu.de/dofus3beta/v1/en/items/consumables/all`;
+
 // TODO: Add a loading spinner while fetching data
 // TODO: Create Resources comparison page
 
 function App() {
-  const [data, setData] = useState({
+  const [v3Data, setV3Data] = useState({
+    allEquipment: [],
+    allResources: [],
+    allConsumables: [],
+  });
+  const [betaData, setBetaData] = useState({
     allEquipment: [],
     allResources: [],
     allConsumables: [],
   });
   const [equipmentNames, setEquipmentNames] = useState([]);
-  const [selectedEquipmentData, setSelectedEquipmentData] = useState(null);
+  const [selectedEquipmentV3Data, setSelectedEquipmentV3Data] = useState(null);
+  const [selectedEquipmentBetaData, setSelectedEquipmentBetaData] =
+    useState(null);
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -61,12 +58,17 @@ function App() {
     const cancelTokenSource = axios.CancelToken.source();
 
     // Function to fetch all data
-    const fetchAllData = async () => {
+    const fetchAllData = async (
+      setData,
+      allEquipmentApiURL,
+      allResourcesApiUrl,
+      allConsumablesApiUrl
+    ) => {
       try {
         setLoading(true);
 
         // Define all API calls with the same cancel token
-        const allEquipmentPromise = axios.get(Dofus3AllEquipment, {
+        const allEquipmentPromise = axios.get(allEquipmentApiURL, {
           params: {
             "filter[min_level]": 150,
             "filter[max_level]": 200,
@@ -76,11 +78,11 @@ function App() {
           cancelToken: cancelTokenSource.token,
         });
 
-        const allResourcesPromise = axios.get(Dofus3AllResources, {
+        const allResourcesPromise = axios.get(allResourcesApiUrl, {
           cancelToken: cancelTokenSource.token,
         });
 
-        const allConsumablesPromise = axios.get(Dofus3AllConsumables, {
+        const allConsumablesPromise = axios.get(allConsumablesApiUrl, {
           cancelToken: cancelTokenSource.token,
         });
 
@@ -126,8 +128,21 @@ function App() {
       }
     };
 
-    // Call the fetch function
-    fetchAllData();
+    // Call the fetch function for V3
+    fetchAllData(
+      setV3Data,
+      Dofus3AllEquipment,
+      Dofus3AllResources,
+      Dofus3AllConsumables
+    );
+
+    // Call the fetch function for Beta
+    fetchAllData(
+      setBetaData,
+      DofusBetaAllEquipment,
+      DofusBetaAllResources,
+      DofusBetaAllConsumables
+    );
 
     // Cleanup function to cancel pending requests when component unmounts
     return () => {
@@ -148,9 +163,11 @@ function App() {
           }}
         >
           <AutocompleteSearchBar
-            data={data}
+            v3Data={v3Data}
+            betaData={betaData}
             equipmentNames={equipmentNames}
-            setSelectedEquipmentData={setSelectedEquipmentData}
+            setSelectedEquipmentV3Data={setSelectedEquipmentV3Data}
+            setSelectedEquipmentBetaData={setSelectedEquipmentBetaData}
           />
         </div>
         {/* ==== Combo Box Search Section ==== */}
@@ -161,7 +178,7 @@ function App() {
           <Grid size={5}>
             {" "}
             {/* 1: Top Left */}
-            <ItemStatsCard item={selectedEquipmentData} />
+            <ItemStatsCard item={selectedEquipmentV3Data} />
           </Grid>
           <Grid
             size={2}
@@ -169,7 +186,6 @@ function App() {
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              fontSize: "2rem",
               color: "#1a1a1a",
               marginTop: "20px",
             }}
@@ -181,12 +197,12 @@ function App() {
           <Grid size={5}>
             {" "}
             {/* 3: Top Right */}
-            <ItemStatsCard item={selectedEquipmentData} />
+            <ItemStatsCard item={selectedEquipmentBetaData} />
           </Grid>
           <Grid size={5}>
             {" "}
             {/* 4: Bottom Left */}
-            <ItemRecipeCard item={selectedEquipmentData} data={data} />
+            <ItemRecipeCard item={selectedEquipmentV3Data} data={v3Data} />
           </Grid>
           <Grid
             size={2}
@@ -205,7 +221,7 @@ function App() {
           <Grid size={5}>
             {" "}
             {/* 5: Bottom Right */}
-            <ItemRecipeCard item={selectedEquipmentData} data={data} />
+            <ItemRecipeCard item={selectedEquipmentBetaData} data={v3Data} />
           </Grid>
         </Grid>
       </Box>
