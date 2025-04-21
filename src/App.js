@@ -28,9 +28,10 @@ import axios from "axios";
 // Utilities
 import getCharacteristicImage from "./utility/characteristicsMap";
 
-// Cancel Axios
-let cancelAllEquipmentAxios = null;
-let cancelAllResourcesCallAxios = null;
+// API URL
+const Dofus3AllEquipment = `https://api.dofusdu.de/dofus3/v1/en/items/equipment/all`;
+const Dofus3AllResources = `https://api.dofusdu.de/dofus3/v1/en/items/resources/all`;
+const Dofus3AllConsumables = `https://api.dofusdu.de/dofus3/v1/en/items/consumables/all`;
 
 function App() {
   const [allEquipmentData, setAllEquipmentData] = useState([]);
@@ -40,76 +41,90 @@ function App() {
     useState("");
   const [selectedEquipmentData, setSelectedEquipmentData] = useState(null);
   const [allResourcesData, setAllResourcesData] = useState([]);
+  const [allConsumablesData, setAllConsumablesData] = useState([]);
 
-  // Fetch data from the API
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
   useEffect(() => {
-    // Fetch data from the API
-    axios
-      .get(`https://api.dofusdu.de/dofus3/v1/en/items/equipment/all`, {
-        params: {
-          "filter[min_level]": 190,
-          "filter[max_level]": 200,
-          "filter[type.name_id]":
-            "Hat,Cloak,Amulet,Ring,Belt,Boots,Dagger,Sword,Staff,Hammer,Bow,Shield",
-        },
+    // Create a cancel token source
+    const cancelTokenSource = axios.CancelToken.source();
 
-        cancelToken: new axios.CancelToken(function (cancel) {
-          // An executor function receives a cancel function as a parameter
-          cancelAllEquipmentAxios = cancel; // Assign the cancel function to the variable
-        }),
-      })
-      .then(function (response) {
-        // handle success
-        console.log("success: ", response);
+    // Function to fetch all data
+    const fetchAllData = async () => {
+      try {
+        setLoading(true);
 
-        setAllEquipmentData(response.data.items);
-        console.log("Equipment Data: ", response.data.items);
+        // Define all API calls with the same cancel token
+        const allEquipmentPromise = axios.get(Dofus3AllEquipment, {
+          params: {
+            "filter[min_level]": 150,
+            "filter[max_level]": 200,
+            "filter[type.name_id]":
+              "Hat,Cloak,Amulet,Ring,Belt,Boots,Dagger,Sword,Staff,Hammer,Bow,Shield",
+          },
+          cancelToken: cancelTokenSource.token,
+        });
+
+        const allResourcesPromise = axios.get(Dofus3AllResources, {
+          cancelToken: cancelTokenSource.token,
+        });
+
+        const allConsumablesPromise = axios.get(Dofus3AllConsumables, {
+          cancelToken: cancelTokenSource.token,
+        });
+
+        // Wait for all promises to resolve
+        const [
+          allEquipmentResponse,
+          allResourcesResponse,
+          allConsumablesResponse,
+        ] = await Promise.all([
+          allEquipmentPromise,
+          allResourcesPromise,
+          allConsumablesPromise,
+        ]);
+
+        // Update state with all responses
+        // setData({
+        //   allEquipmentData: allEquipmentResponse.data.items,
+        //   allResourcesData: allEquipmentResponse.data.items,
+        //   allConsumablesData: commentsResponse.data.items
+        // });
+
+        setAllEquipmentData(allEquipmentResponse.data.items);
+        console.log("Equipment Data: ", allEquipmentResponse.data.items);
+        setAllResourcesData(allResourcesResponse.data.items);
+        console.log("Resources Data: ", allResourcesResponse.data.items);
+        setAllConsumablesData(allConsumablesResponse.data.items);
+        console.log("Consumables Data: ", allConsumablesResponse.data.items);
+
         // Create an array of all the names of the equipment
-        const equipmentNamesResponse = response.data.items.map(
+        const equipmentNamesResponse = allEquipmentResponse.data.items.map(
           (item) => item.name
         );
         console.log("Equipment Names: ", equipmentNamesResponse);
         setEquipmentNames(equipmentNamesResponse);
+      } catch (err) {
+        if (axios.isCancel(err)) {
+          // Request was cancelled, handle accordingly
+          console.log("Request canceled:", err.message);
+        } else {
+          // Handle other errors
+          setError(err.message);
+          console.error("Error fetching data:", err);
+        }
+      } finally {
+        setLoading(false);
+      }
+    };
 
-        // TODO: Fetch All Resources Data
-        axios
-          .get(`https://api.dofusdu.de/dofus3/v1/en/items/resources/all`, {
-            params: {
-              // "filter[min_level]": 190,
-              // "filter[max_level]": 200,
-              // "filter[type.name_id]": "",
-            },
-            cancelToken: new axios.CancelToken(function (cancel) {
-              cancelAllResourcesCallAxios = cancel;
-            }),
-          })
-          .then(function (response) {
-            console.log("success: ", response);
-            setAllResourcesData(response.data.items);
-          })
-          .catch(function (error) {
-            console.log("error: ", error);
-          });
+    // Call the fetch function
+    fetchAllData();
 
-        // End Fetch All Resources Data
-      })
-      .catch(function (error) {
-        // handle error
-        console.log("error: ", error);
-      });
-
-    // Cleanup function to cancel the request if the component unmounts
+    // Cleanup function to cancel pending requests when component unmounts
     return () => {
-      if (cancelAllEquipmentAxios) {
-        cancelAllEquipmentAxios(
-          "Request canceled due to component unmounting."
-        );
-      }
-      if (cancelAllResourcesCallAxios) {
-        cancelAllResourcesCallAxios(
-          "Request canceled due to component unmounting."
-        );
-      }
+      cancelTokenSource.cancel("Component unmounted");
     };
   }, []);
 
