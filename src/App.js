@@ -19,6 +19,11 @@ import Typography from "@mui/material/Typography";
 import Stack from "@mui/material/Stack";
 import Divider from "@mui/material/Divider";
 
+import Grid from "@mui/material/Grid";
+import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
+import ArrowForwardOutlinedIcon from "@mui/icons-material/ArrowForwardOutlined";
+import TrendingFlatOutlinedIcon from "@mui/icons-material/TrendingFlatOutlined";
+
 // Components
 import Header from "./components/header";
 
@@ -149,11 +154,61 @@ function App() {
           />
         </div>
         {/* ==== Combo Box Search Section ==== */}
-
-        <ItemStatsCard item={selectedEquipmentData} />
-
-        <ItemRecipeCard item={selectedEquipmentData} data={data} />
       </Container>
+
+      <Box sx={{ width: "100%" }}>
+        <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
+          <Grid size={5}>
+            {" "}
+            {/* 1: Top Left */}
+            <ItemStatsCard item={selectedEquipmentData} />
+          </Grid>
+          <Grid
+            size={2}
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              fontSize: "2rem",
+              color: "#1a1a1a",
+              marginTop: "20px",
+            }}
+          >
+            {" "}
+            {/* 2: Top Middle */}
+            <TrendingFlatOutlinedIcon sx={{ fontSize: 200 }} />
+          </Grid>
+          <Grid size={5}>
+            {" "}
+            {/* 3: Top Right */}
+            <ItemStatsCard item={selectedEquipmentData} />
+          </Grid>
+          <Grid size={5}>
+            {" "}
+            {/* 4: Bottom Left */}
+            <ItemRecipeCard item={selectedEquipmentData} data={data} />
+          </Grid>
+          <Grid
+            size={2}
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              color: "#1a1a1a",
+              marginTop: "20px",
+            }}
+          >
+            {" "}
+            {/* 5: Bottom Middle */}
+            <TrendingFlatOutlinedIcon sx={{ fontSize: 200 }} />
+          </Grid>
+          <Grid size={5}>
+            {" "}
+            {/* 5: Bottom Right */}
+            <ItemRecipeCard item={selectedEquipmentData} data={data} />
+          </Grid>
+        </Grid>
+      </Box>
     </div>
   );
 }
