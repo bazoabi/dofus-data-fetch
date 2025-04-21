@@ -43,12 +43,17 @@ export default function ItemRecipeCard({ item, data }) {
                   (res) => res.ankama_id === resource.item_ankama_id
                 );
                 if (resourceData === undefined) {
-                  // try to search for the resource in the allEquipmentData array
+                  // try to search for the resource in the allEquipment array
                   resourceData = data.allEquipment.find(
                     (res) => res.ankama_id === resource.item_ankama_id
                   );
                 }
-                // TODO: if resourceData still undefined, search for consumables as part of the recipe
+                if (resourceData === undefined) {
+                  // try to search for the resource in the allConsumables array
+                  resourceData = data.allConsumables.find(
+                    (res) => res.ankama_id === resource.item_ankama_id
+                  );
+                }
                 return resourceData === undefined ? (
                   <Typography
                     key={resource?.item_ankama_id}
