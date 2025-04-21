@@ -27,11 +27,15 @@ import axios from "axios";
 
 // Utilities
 import getCharacteristicImage from "./utility/characteristicsMap";
+import AutocompleteSearchBar from "./components/AutocompleteSearchBar";
 
 // API URL
 const Dofus3AllEquipment = `https://api.dofusdu.de/dofus3/v1/en/items/equipment/all`;
 const Dofus3AllResources = `https://api.dofusdu.de/dofus3/v1/en/items/resources/all`;
 const Dofus3AllConsumables = `https://api.dofusdu.de/dofus3/v1/en/items/consumables/all`;
+
+// TODO: Add a loading spinner while fetching data
+// TODO: Create Resources comparison page
 
 function App() {
   const [data, setData] = useState({
@@ -40,9 +44,6 @@ function App() {
     allConsumables: [],
   });
   const [equipmentNames, setEquipmentNames] = useState([]);
-  const [selectedEquipmentName, setSelectedEquipmentName] = useState("");
-  const [selectedInputEquipmentName, setSelectedInputEquipmentName] =
-    useState("");
   const [selectedEquipmentData, setSelectedEquipmentData] = useState(null);
 
   const [loading, setLoading] = useState(true);
@@ -132,20 +133,6 @@ function App() {
       <Container maxWidth="sm">
         <Header />
 
-        {/* Show Selected Equipment Name Label */}
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            marginTop: "20px",
-            marginBottom: "20px",
-            color: "white",
-          }}
-        >
-          {selectedEquipmentName}
-        </div>
-        {/* ==== Show Selected Equipment Name Label ==== */}
-
         {/* Combo Box Search Section */}
         <div
           style={{
@@ -153,36 +140,10 @@ function App() {
             justifyContent: "center",
           }}
         >
-          <Autocomplete
-            value={selectedEquipmentName ?? ""}
-            onChange={(event, newValue) => {
-              setSelectedEquipmentName(newValue);
-            }}
-            inputValue={selectedInputEquipmentName}
-            onInputChange={(event, newInputValue) => {
-              setSelectedInputEquipmentName(newInputValue);
-              setSelectedEquipmentData(
-                data.allEquipment.find((item) => item.name === newInputValue)
-              );
-            }}
-            disablePortal
-            options={equipmentNames}
-            sx={{
-              width: 300,
-              boxShadow: "0px 0px 10px 0px rgba(0, 0, 0, 0.5)",
-              "& .MuiInputBase-input": {
-                color: "white",
-              },
-              "& .MuiFormLabel-root": {
-                color: "white",
-              },
-            }}
-            renderInput={(params) => (
-              <TextField
-                {...params}
-                label={selectedEquipmentName === "" ? "Equipment" : ""}
-              />
-            )}
+          <AutocompleteSearchBar
+            data={data}
+            equipmentNames={equipmentNames}
+            setSelectedEquipmentData={setSelectedEquipmentData}
           />
         </div>
         {/* ==== Combo Box Search Section ==== */}
