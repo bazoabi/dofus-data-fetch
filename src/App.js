@@ -297,11 +297,29 @@ function App() {
               </div>
               <div>
                 <div>
-                  {selectedEquipmentData?.recipe.map((resource) => {
-                    const resourceData = allResourcesData.find(
+                  {selectedEquipmentData?.recipe?.map((resource) => {
+                    let resourceData = allResourcesData.find(
                       (res) => res.ankama_id === resource.item_ankama_id
                     );
-                    return (
+                    if (resourceData === undefined) {
+                      // try to search for the resource in the allEquipmentData array
+                      resourceData = allEquipmentData.find(
+                        (res) => res.ankama_id === resource.item_ankama_id
+                      );
+                    }
+                    // TODO: if resourceData still undefined, search for consumables as part of the recipe
+                    return resourceData === undefined ? (
+                      <Typography
+                        key={resource?.item_ankama_id}
+                        variant="body1"
+                        style={{ color: "red" }}
+                      >
+                        {"Unknown Resource"} x{" "}
+                        <span style={{ color: "lightsalmon" }}>
+                          {resource.quantity}
+                        </span>
+                      </Typography>
+                    ) : (
                       <Stack
                         direction="row"
                         spacing={1}
