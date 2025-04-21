@@ -34,14 +34,16 @@ const Dofus3AllResources = `https://api.dofusdu.de/dofus3/v1/en/items/resources/
 const Dofus3AllConsumables = `https://api.dofusdu.de/dofus3/v1/en/items/consumables/all`;
 
 function App() {
-  const [allEquipmentData, setAllEquipmentData] = useState([]);
+  const [data, setData] = useState({
+    allEquipment: [],
+    allResources: [],
+    allConsumables: [],
+  });
   const [equipmentNames, setEquipmentNames] = useState([]);
   const [selectedEquipmentName, setSelectedEquipmentName] = useState("");
   const [selectedInputEquipmentName, setSelectedInputEquipmentName] =
     useState("");
   const [selectedEquipmentData, setSelectedEquipmentData] = useState(null);
-  const [allResourcesData, setAllResourcesData] = useState([]);
-  const [allConsumablesData, setAllConsumablesData] = useState([]);
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -85,18 +87,15 @@ function App() {
           allConsumablesPromise,
         ]);
 
-        // Update state with all responses
-        // setData({
-        //   allEquipmentData: allEquipmentResponse.data.items,
-        //   allResourcesData: allEquipmentResponse.data.items,
-        //   allConsumablesData: commentsResponse.data.items
-        // });
+        //Update state with all responses
+        setData({
+          allEquipment: allEquipmentResponse.data.items,
+          allResources: allResourcesResponse.data.items,
+          allConsumables: allConsumablesResponse.data.items,
+        });
 
-        setAllEquipmentData(allEquipmentResponse.data.items);
         console.log("Equipment Data: ", allEquipmentResponse.data.items);
-        setAllResourcesData(allResourcesResponse.data.items);
         console.log("Resources Data: ", allResourcesResponse.data.items);
-        setAllConsumablesData(allConsumablesResponse.data.items);
         console.log("Consumables Data: ", allConsumablesResponse.data.items);
 
         // Create an array of all the names of the equipment
@@ -163,7 +162,7 @@ function App() {
             onInputChange={(event, newInputValue) => {
               setSelectedInputEquipmentName(newInputValue);
               setSelectedEquipmentData(
-                allEquipmentData.find((item) => item.name === newInputValue)
+                data.allEquipment.find((item) => item.name === newInputValue)
               );
             }}
             disablePortal
@@ -313,12 +312,12 @@ function App() {
               <div>
                 <div>
                   {selectedEquipmentData?.recipe?.map((resource) => {
-                    let resourceData = allResourcesData.find(
+                    let resourceData = data.allResources.find(
                       (res) => res.ankama_id === resource.item_ankama_id
                     );
                     if (resourceData === undefined) {
                       // try to search for the resource in the allEquipmentData array
-                      resourceData = allEquipmentData.find(
+                      resourceData = data.allEquipment.find(
                         (res) => res.ankama_id === resource.item_ankama_id
                       );
                     }
