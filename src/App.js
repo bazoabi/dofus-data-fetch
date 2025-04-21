@@ -25,6 +25,9 @@ import Header from "./components/header";
 // External Libraries
 import axios from "axios";
 
+// Utilities
+import getCharacteristicImage from "./utility/characteristicsMap";
+
 // Cancel Axios
 let cancelAxios = null;
 
@@ -182,20 +185,42 @@ function App() {
                   }}
                 >
                   {selectedEquipmentData?.effects.map((effect) => (
-                    <Typography
-                      variant="body2"
+                    // add image for the characteristic
+
+                    <Stack
+                      direction="row"
+                      spacing={1}
                       key={effect.type.id}
                       style={{
-                        color:
-                          String(effect.formatted).length > 50
-                            ? "white"
-                            : String(effect.formatted).includes("-")
-                            ? "lightcoral"
-                            : "lightgreen",
+                        marginBottom: "10px",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
                       }}
                     >
-                      {effect.formatted}
-                    </Typography>
+                      {String(effect.formatted).length > 50 ? null : (
+                        <img
+                          src={getCharacteristicImage(effect.type.name)}
+                          alt={effect.type.name}
+                          style={{ width: "20px", height: "20px" }}
+                        />
+                      )}
+
+                      <Typography
+                        variant="body2"
+                        key={effect.type.id}
+                        style={{
+                          color:
+                            String(effect.formatted).length > 50
+                              ? "white"
+                              : String(effect.formatted).includes("-")
+                              ? "lightcoral"
+                              : "lightgreen",
+                        }}
+                      >
+                        {effect.formatted}
+                      </Typography>
+                    </Stack>
                   ))}
                 </div>
               </div>
