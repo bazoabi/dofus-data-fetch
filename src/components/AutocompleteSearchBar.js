@@ -3,9 +3,11 @@ import TextField from "@mui/material/TextField";
 import Autocomplete from "@mui/material/Autocomplete";
 
 export default function AutocompleteSearchBar({
-  data,
+  v3Data,
+  betaData,
   equipmentNames,
-  setSelectedEquipmentData,
+  setSelectedEquipmentV3Data,
+  setSelectedEquipmentBetaData,
 }) {
   const [selectedEquipmentName, setSelectedEquipmentName] = useState("");
   const [selectedInputEquipmentName, setSelectedInputEquipmentName] =
@@ -20,8 +22,11 @@ export default function AutocompleteSearchBar({
       inputValue={selectedInputEquipmentName}
       onInputChange={(event, newInputValue) => {
         setSelectedInputEquipmentName(newInputValue);
-        setSelectedEquipmentData(
-          data.allEquipment.find((item) => item.name === newInputValue)
+        setSelectedEquipmentV3Data(
+          v3Data.allEquipment.find((item) => item.name === newInputValue)
+        );
+        setSelectedEquipmentBetaData(
+          betaData.allEquipment.find((item) => item.name === newInputValue)
         );
       }}
       disablePortal
