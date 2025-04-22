@@ -7,7 +7,7 @@ import {
 } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import Equipment from "./components/Equipment";
-// import Sets from "./Sets";
+import Sets from "./components/Sets";
 import "./App.css"; // Assuming you have some styles
 
 function App() {
@@ -20,7 +20,7 @@ function App() {
             {/* Redirect the root path to /equipment */}
             <Route path="/" element={<Navigate to="/equipment" replace />} />
             <Route path="/equipment" element={<Equipment />} />
-            {/* <Route path="/sets" element={<Sets />} /> */}
+            <Route path="/sets" element={<Sets />} />
           </Routes>
         </div>
       </div>
