@@ -18,7 +18,7 @@ function App() {
         <div className="content">
           <Routes>
             {/* Redirect the root path to /equipment */}
-            <Route path="/" element={<Navigate to="/equipment" replace />} />
+            <Route path="/" element={<Navigate to="/sets" replace />} />
             <Route path="/equipment" element={<Equipment />} />
             <Route path="/sets" element={<Sets />} />
           </Routes>
