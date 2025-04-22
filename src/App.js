@@ -2,13 +2,15 @@ import logo from "./logo.svg";
 import "./App.css";
 
 // React
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 // Material UI
 import Container from "@mui/material/Container";
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
 import TrendingFlatOutlinedIcon from "@mui/icons-material/TrendingFlatOutlined";
+import Stack from "@mui/material/Stack";
+import Typography from "@mui/material/Typography";
 
 // Components
 import Header from "./components/header";
@@ -150,6 +152,85 @@ function App() {
     };
   }, []);
 
+  const recipeDiffArray = useMemo(() => {
+    if (!selectedEquipmentV3Data || !selectedEquipmentBetaData) return null;
+
+    // Check if selected equipment has recipe
+    if (!selectedEquipmentV3Data.recipe || !selectedEquipmentBetaData.recipe) {
+      return null;
+    }
+
+    const recipeDiffArr = [];
+    for (const v3Resource of selectedEquipmentV3Data.recipe) {
+      // Check if the resource exists in the beta recipe
+      const betaResource = selectedEquipmentBetaData.recipe.find(
+        (betaResource) =>
+          betaResource.item_ankama_id === v3Resource.item_ankama_id
+      );
+      if (betaResource) {
+        // If it exists, calculate the difference in quantity
+        const diff = betaResource.quantity - v3Resource.quantity;
+        recipeDiffArr.push({
+          ...v3Resource,
+          quantity: diff,
+        });
+      } else {
+        // If it doesn't exist, add the resource with a negative quantity
+        recipeDiffArr.push({
+          ...v3Resource,
+          quantity: 0 - v3Resource.quantity,
+        });
+      }
+    }
+
+    for (const betaResource of selectedEquipmentBetaData.recipe) {
+      // Check if the resource exists in the v3 recipe
+      const v3Resource = selectedEquipmentV3Data.recipe.find(
+        (v3Resource) =>
+          v3Resource.item_ankama_id === betaResource.item_ankama_id
+      );
+      if (!v3Resource) {
+        // If it doesn't exist, add the resource with a positive quantity
+        recipeDiffArr.push({
+          ...betaResource,
+          quantity: betaResource.quantity,
+        });
+      }
+    }
+    // Filter out the resources with quantity 0
+    const filteredRecipeDiffArr = recipeDiffArr.filter(
+      (resource) => resource.quantity !== 0
+    );
+
+    // Find the name and image of the resource from the allResources, allEquipment, and allConsumables arrays
+    // and add it to the resource object
+    const filteredRecipeDiffExpandedArr = filteredRecipeDiffArr.map(
+      (resource) => {
+        let resourceData = betaData.allResources.find(
+          (res) => res.ankama_id === resource.item_ankama_id
+        );
+        if (resourceData === undefined) {
+          // try to search for the resource in the allEquipment array
+          resourceData = betaData.allEquipment.find(
+            (res) => res.ankama_id === resource.item_ankama_id
+          );
+        }
+        if (resourceData === undefined) {
+          // try to search for the resource in the allConsumables array
+          resourceData = betaData.allConsumables.find(
+            (res) => res.ankama_id === resource.item_ankama_id
+          );
+        }
+        return resourceData === undefined
+          ? resource
+          : { ...resource, ...resourceData };
+      }
+    );
+
+    console.log("Recipe Diff Array: ", filteredRecipeDiffExpandedArr);
+    return filteredRecipeDiffExpandedArr;
+  }, [selectedEquipmentV3Data, selectedEquipmentBetaData, betaData]);
+
   return (
     <div className="App">
       <Container maxWidth="sm">
@@ -175,13 +256,13 @@ function App() {
 
       <Box sx={{ width: "100%" }}>
         <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
-          <Grid size={5}>
+          <Grid size={4}>
             {" "}
             {/* 1: Top Left */}
             <ItemStatsCard item={selectedEquipmentV3Data} />
           </Grid>
           <Grid
-            size={2}
+            size={4}
             sx={{
               display: "flex",
               alignItems: "center",
@@ -192,33 +273,81 @@ function App() {
           >
             {" "}
             {/* 2: Top Middle */}
-            <TrendingFlatOutlinedIcon sx={{ fontSize: 200 }} />
+            <TrendingFlatOutlinedIcon sx={{ fontSize: 400 }} />
           </Grid>
-          <Grid size={5}>
+          <Grid size={4}>
             {" "}
             {/* 3: Top Right */}
             <ItemStatsCard item={selectedEquipmentBetaData} />
           </Grid>
-          <Grid size={5}>
+          <Grid size={4}>
             {" "}
             {/* 4: Bottom Left */}
             <ItemRecipeCard item={selectedEquipmentV3Data} data={v3Data} />
           </Grid>
           <Grid
-            size={2}
+            size={4}
             sx={{
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
               color: "#1a1a1a",
               marginTop: "20px",
+              position: "relative",
             }}
           >
             {" "}
             {/* 5: Bottom Middle */}
-            <TrendingFlatOutlinedIcon sx={{ fontSize: 200 }} />
+            <TrendingFlatOutlinedIcon sx={{ fontSize: 400 }} />
+            <Stack
+              sx={{
+                position: "absolute", // Position this absolutely
+                top: "50%", // Center vertically
+                left: "50%", // Center horizontally
+                transform: "translate(-50%, -50%)", // Adjust for perfect centering
+                zIndex: 1, // Make sure it's above the icon
+              }}
+            >
+              {recipeDiffArray?.map((resource) => {
+                return (
+                  <Stack
+                    direction="row"
+                    color={"white"}
+                    spacing={1}
+                    key={resource?.item_ankama_id}
+                    style={{
+                      marginBottom: "10px",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                  >
+                    <img
+                      src={resource?.image_urls.sd}
+                      alt={resource?.name}
+                      style={{ width: "20px", height: "20px" }}
+                    />
+                    <Typography variant="body1">
+                      <span
+                        style={{
+                          color:
+                            resource?.quantity > 0
+                              ? "lightgreen"
+                              : "lightcoral",
+                          fontWeight: "bold",
+                        }}
+                      >
+                        {resource?.quantity > 0 ? "+" : ""}
+                        {resource?.quantity}
+                      </span>{" "}
+                      {resource?.name}
+                    </Typography>
+                  </Stack>
+                );
+              })}
+            </Stack>
           </Grid>
-          <Grid size={5}>
+          <Grid size={4}>
             {" "}
             {/* 5: Bottom Right */}
             <ItemRecipeCard item={selectedEquipmentBetaData} data={betaData} />
