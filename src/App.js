@@ -221,7 +221,7 @@ function App() {
           <Grid size={5}>
             {" "}
             {/* 5: Bottom Right */}
-            <ItemRecipeCard item={selectedEquipmentBetaData} data={v3Data} />
+            <ItemRecipeCard item={selectedEquipmentBetaData} data={betaData} />
           </Grid>
         </Grid>
       </Box>
