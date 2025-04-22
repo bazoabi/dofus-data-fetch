@@ -7,6 +7,7 @@ import Container from "@mui/material/Container";
 // Components
 import Header from "./HeaderComponent";
 import SetsAutocompleteSearchBar from "./SetsAutocompleteSearchBar";
+import SetStatsCard from "./setStatsCard";
 
 // External Libraries
 import axios from "axios";
@@ -129,6 +130,8 @@ function Sets() {
           />
         </div>
         {/* ==== Combo Box Search Section ==== */}
+
+        <SetStatsCard set={selectedSetV3Data} />
       </Container>
     </div>
   );
