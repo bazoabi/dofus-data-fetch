@@ -232,6 +232,90 @@ function App() {
     return filteredRecipeDiffExpandedArr;
   }, [selectedEquipmentV3Data, selectedEquipmentBetaData, betaData]);
 
+  // TODO: Remove ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  const sparklingPebblesItemsLists = useMemo(() => {
+    if (!selectedEquipmentV3Data || !selectedEquipmentBetaData) return null;
+
+    // Check if selected equipment has recipe
+    if (!selectedEquipmentV3Data.recipe || !selectedEquipmentBetaData.recipe) {
+      return null;
+    }
+
+    // TODO: Look for items that have a resource of id: 12740 at the betaData recipe
+    const betaDataItemsWithSparklingPebbles = betaData.allEquipment.filter(
+      (item) => {
+        return item.recipe?.find(
+          (resource) => resource.item_ankama_id === 12740 //29444 radiant pebble //26037 eternal conflict mask //15715vortex wing //sparkling pebble: 12740
+        );
+      }
+    );
+
+    const v3SparklingPebblesItemsList = v3Data.allEquipment.filter((item) => {
+      return item.recipe?.find((resource) => resource.item_ankama_id === 12740);
+    });
+
+    return {
+      beta: betaDataItemsWithSparklingPebbles,
+      v3: v3SparklingPebblesItemsList,
+    };
+  }, [selectedEquipmentV3Data, selectedEquipmentBetaData, betaData, v3Data]);
+
+  // console.log(
+  //   "Beta Sparkling Pebbles Items List: ",
+  //   sparklingPebblesItemsLists?.beta,
+  //   "V3 Sparkling Pebbles Items List: ",
+  //   sparklingPebblesItemsLists?.v3
+  // );
+
+  // Check what items have sparkling pebbles in their recipe in Beta version, and not in V3 version
+  const sparklingPebblesItemsDiffNoV3 = useMemo(() => {
+    if (!sparklingPebblesItemsLists) return null;
+
+    const v3ItemsWithSparklingPebbles = sparklingPebblesItemsLists.v3.map(
+      (item) => item.name
+    );
+    const betaItemsWithSparklingPebbles = sparklingPebblesItemsLists.beta.map(
+      (item) => item.name
+    );
+
+    const diff = betaItemsWithSparklingPebbles.filter(
+      (item) => !v3ItemsWithSparklingPebbles.includes(item)
+    );
+
+    return diff;
+  }, [sparklingPebblesItemsLists]);
+
+  console.log(
+    "Sparkling Pebbles Items Diff, Exists in Beta but not in V3: ",
+    sparklingPebblesItemsDiffNoV3
+  );
+
+  // Check what items have sparkling pebbles in their recipe in V3 version, and not in Beta version
+
+  const sparklingPebblesItemsDiffNoBeta = useMemo(() => {
+    if (!sparklingPebblesItemsLists) return null;
+
+    const v3ItemsWithSparklingPebbles = sparklingPebblesItemsLists.v3.map(
+      (item) => item.name
+    );
+    const betaItemsWithSparklingPebbles = sparklingPebblesItemsLists.beta.map(
+      (item) => item.name
+    );
+
+    const diff = v3ItemsWithSparklingPebbles.filter(
+      (item) => !betaItemsWithSparklingPebbles.includes(item)
+    );
+
+    return diff;
+  }, [sparklingPebblesItemsLists]);
+
+  console.log(
+    "Sparkling Pebbles Items Diff, Exists in V3 but not in Beta: ",
+    sparklingPebblesItemsDiffNoBeta
+  );
+
+  // TODO: Remove ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
   return (
     <div className="App">
       <Container maxWidth="sm">
