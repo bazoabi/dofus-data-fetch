@@ -10,6 +10,10 @@ import Equipment from "./components/Equipment";
 import Sets from "./components/Sets";
 import "./App.css"; // Assuming you have some styles
 
+// TODO: Add a loading spinner while fetching data
+// TODO: Create Resources comparison page
+// TODO: Show the stats comparison between V3 and Beta in the SetsStatsCard component
+
 function App() {
   return (
     <Router>
