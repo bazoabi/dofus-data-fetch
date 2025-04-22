@@ -3,6 +3,8 @@ import { useState, useEffect } from "react";
 
 // Material UI
 import Container from "@mui/material/Container";
+import Grid from "@mui/material/Grid";
+import TrendingFlatOutlinedIcon from "@mui/icons-material/TrendingFlatOutlined";
 
 // Components
 import Header from "./HeaderComponent";
@@ -76,13 +78,6 @@ function Sets() {
         });
 
         console.log("Sets Data: ", updateNoDuplicateSetsList);
-
-        // Create an array of all the names of the equipment
-        const setsNamesResponse = updateNoDuplicateSetsList.map(
-          (item) => item.name
-        );
-        console.log("Sets Names: ", setsNamesResponse);
-        setSetsNames(setsNamesResponse);
       } catch (err) {
         if (axios.isCancel(err)) {
           // Request was cancelled, handle accordingly
@@ -109,6 +104,13 @@ function Sets() {
     };
   }, []);
 
+  useEffect(() => {
+    // Create an array of all the names of the equipment
+    const setsNamesResponse = betaData.allSets.map((item) => item.name);
+    console.log("Sets Names: ", setsNamesResponse);
+    setSetsNames(setsNamesResponse);
+  }, [betaData]);
+
   return (
     <div className="Sets">
       <Container maxWidth="sm">
@@ -130,9 +132,34 @@ function Sets() {
           />
         </div>
         {/* ==== Combo Box Search Section ==== */}
-
-        <SetStatsCard set={selectedSetV3Data} />
       </Container>
+
+      <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
+        <Grid size={4}>
+          {" "}
+          {/* 1: Left */}
+          <SetStatsCard set={selectedSetV3Data} />
+        </Grid>
+        <Grid
+          size={4}
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            color: "#1a1a1a",
+            marginTop: "20px",
+          }}
+        >
+          {" "}
+          {/* 2: Middle */}
+          <TrendingFlatOutlinedIcon sx={{ fontSize: 400 }} />
+        </Grid>
+        <Grid size={4}>
+          {" "}
+          {/* 3: Right */}
+          <SetStatsCard set={selectedSetBetaData} />
+        </Grid>
+      </Grid>
     </div>
   );
 }
