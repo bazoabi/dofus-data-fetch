@@ -14,7 +14,7 @@ import Typography from "@mui/material/Typography";
 import Divider from "@mui/material/Divider";
 
 // Components
-import Header from "./components/header";
+import Header from "./components/Header";
 
 // External Libraries
 import axios from "axios";
