@@ -13,7 +13,7 @@ import "./App.css"; // Assuming you have some styles
 function App() {
   return (
     <Router>
-      <div className="app">
+      <div className="App">
         <Navbar />
         <div className="content">
           <Routes>

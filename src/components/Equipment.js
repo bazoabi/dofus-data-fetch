@@ -316,7 +316,7 @@ function Equipment() {
   // TODO: Remove ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
   return (
-    <div className="App">
+    <div className="Equipment">
       <Container maxWidth="sm">
         <Header />
 
