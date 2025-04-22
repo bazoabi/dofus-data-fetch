@@ -9,19 +9,18 @@ export default function SetsAutocompleteSearchBar({
   setSelectedSetV3Data,
   setSelectedSetBetaData,
 }) {
-  const [selectedEquipmentName, setSelectedEquipmentName] = useState("");
-  const [selectedInputEquipmentName, setSelectedInputEquipmentName] =
-    useState("");
+  const [selectedSetName, setSelectedSetName] = useState("");
+  const [selectedInputSetName, setSelectedInputSetName] = useState("");
 
   return (
     <Autocomplete
-      value={selectedEquipmentName ?? ""}
+      value={selectedSetName ?? ""}
       onChange={(event, newValue) => {
-        setSelectedEquipmentName(newValue);
+        setSelectedSetName(newValue);
       }}
-      inputValue={selectedInputEquipmentName}
+      inputValue={selectedInputSetName}
       onInputChange={(event, newInputValue) => {
-        setSelectedInputEquipmentName(newInputValue);
+        setSelectedInputSetName(newInputValue);
         setSelectedSetV3Data(
           v3Data.allSets.find((item) => item.name === newInputValue)
         );
@@ -44,7 +43,7 @@ export default function SetsAutocompleteSearchBar({
       renderInput={(params) => (
         <TextField
           {...params}
-          label={selectedEquipmentName === "" ? "Choose Set" : ""}
+          label={selectedSetName === "" ? "Choose Set" : ""}
         />
       )}
     />
