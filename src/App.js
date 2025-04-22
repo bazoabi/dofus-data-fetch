@@ -11,8 +11,14 @@ import Sets from "./components/Sets";
 import "./App.css"; // Assuming you have some styles
 
 // TODO: Add a loading spinner while fetching data
+
 // TODO: Create Resources comparison page
+
 // TODO: Show the stats comparison between V3 and Beta in the SetsStatsCard component
+
+// TODO: Fix the key conflict issue in the Equipment component,
+// there seems to be items sharing same name but different ids,
+// solution should be adding id to the name same as i have done in the Sets component at updateNoDuplicateSetsList
 
 function App() {
   return (
