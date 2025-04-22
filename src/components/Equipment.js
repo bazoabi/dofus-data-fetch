@@ -33,9 +33,6 @@ const DofusBetaAllEquipment = `https://api.dofusdu.de/dofus3beta/v1/en/items/equ
 const DofusBetaAllResources = `https://api.dofusdu.de/dofus3beta/v1/en/items/resources/all`;
 const DofusBetaAllConsumables = `https://api.dofusdu.de/dofus3beta/v1/en/items/consumables/all`;
 
-// TODO: Add a loading spinner while fetching data
-// TODO: Create Resources comparison page
-
 function Equipment() {
   const [v3Data, setV3Data] = useState({
     allEquipment: [],
