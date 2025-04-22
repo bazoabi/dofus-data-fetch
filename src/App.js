@@ -11,6 +11,7 @@ import Grid from "@mui/material/Grid";
 import TrendingFlatOutlinedIcon from "@mui/icons-material/TrendingFlatOutlined";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
+import Divider from "@mui/material/Divider";
 
 // Components
 import Header from "./components/header";
@@ -306,7 +307,22 @@ function App() {
                 left: "50%", // Center horizontally
                 transform: "translate(-50%, -50%)", // Adjust for perfect centering
                 zIndex: 1, // Make sure it's above the icon
+                border: "1px solid rgb(80, 74, 74)",
+                boxShadow: "0px 0px 10px 0px rgba(0, 0, 0, 0.5)",
+                width: "80%", // Adjust width as needed
+                borderRadius: "5px",
+                padding: "10px",
+                backgroundColor: "rgba(0, 0, 0, 0.45)", // Semi-transparent background
               }}
+              divider={
+                <Divider
+                  flexItem
+                  sx={{
+                    background: "rgba(80, 74, 74, 0.58)",
+                    marginBottom: 2,
+                  }}
+                />
+              }
             >
               {recipeDiffArray?.map((resource) => {
                 return (
