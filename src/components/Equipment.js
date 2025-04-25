@@ -310,6 +310,260 @@ function Equipment() {
     sparklingPebblesItemsDiffNoBeta
   );
 
+  // Print selectedEquipmentV3Data resources names and ids
+  console.log(
+    "Selected Equipment V3 Data Recipe: ",
+    selectedEquipmentV3Data?.recipe?.map((resource) => {
+      const resourceData = v3Data.allResources.find(
+        (res) => res.ankama_id === resource.item_ankama_id
+      );
+      let resObj = [];
+      if (resourceData === undefined) {
+        resObj = ["Unknown Resource", resource.item_ankama_id];
+      } else {
+        resObj = [resourceData.ankama_id, resourceData.name];
+      }
+      return resObj;
+    })
+  );
+
+  // Check what items have expensive resource in their recipe
+  const expensiveResourcesIdList = [
+    12740, // sparkling pebble
+    29444, // radiant pebble
+    26037, // eternal conflict mask
+    15715, // vortex wing
+    19404, // solar
+    17989, // koutoulou
+    27402, // belladona
+    13994, // count hare
+    14635, // nuggets
+  ]; //12740 //29444 radiant pebble //26037 eternal conflict mask //15715vortex wing //sparkling pebble: 12740
+
+  const wantedItemsListGoodAfterUpdate = [
+    "Sleet Ring",
+    "Celestial Bearbarian Cloak",
+    "Celestial Bearbarian Boots",
+    "Eculture Cape",
+    "Battleflag Amulet",
+    "Lemming Bracelet",
+    "Giger's Nightmare Blade",
+    "Stormcloud Staff",
+    "Godswrath Daggers",
+    "Archaic Bow",
+    "Bearbaric Wedding Ring",
+    "Bearbaric Band",
+    "Celestial Bearbarian Headdress",
+    "Minotoball Bracelet",
+    "Broucey Ring",
+    "Broucey Boots",
+    "Otomai's Amulet",
+    "Otomai's Boots",
+    "Otomai's Sword",
+    "Danathor's Helmet",
+    "Allister's Ring",
+    "Mad Chatter",
+    "Henual's Ring",
+    "Nomarow's Helmet",
+    "Nomarow's Getas",
+    "Aermyne's Helmet",
+    "Aermyne's Cape",
+    "Cushtycloak",
+    "Shabby Shoes",
+    "Mallard's Mallet",
+    "Shylock's Ring",
+    "Copper Nickus Ring",
+    "Klime's Cloak",
+    "Vicious Hat",
+    "Glacial Cape",
+    "Glacial Ring",
+    "Missiz Freezz's Boots",
+    "Creaking Tree Hat",
+    "Nileza's Boots",
+    "Unstable Ring",
+    "Kan-O-Mat Headgear",
+    "Count Harebourg's Ring",
+    "Count Harebourg's Boots",
+    "Age-Old Helmet",
+    "Age-Old Amulet",
+    "Bubotron Mask",
+    "Bubotron Amulet",
+    "Sinistrofu Cloak",
+    "Sinistrofu Amulet",
+    "Cryochrone Helmet",
+    "Cryochrone Amulet",
+    "Cycloid Amulet",
+    "Cycloid Ring",
+    "Cycloid Boots",
+    "Treadfast Amulet",
+    "Treadfast Boots",
+    "Nocturnowl Belt",
+    "Nocturnowl Boots",
+    "Jolly Good Belt",
+    "Joyous Seizers",
+    "Flinty Daggers",
+    "Gilbert G. Rapier",
+    "Crushed Velvet Cape",
+    "Pauper's Robe",
+    "Archon's Bow",
+    "Sepulchral Sceptre",
+    "Sanockout Stick",
+    "Cloak of a Thousand Excuses",
+    "White Lai Amulet",
+    "Bzzzinga Headband",
+    "Hot Docs",
+    "The King of Bonta's Pants",
+    "Sulph Phylactery",
+    "Smelted Belt",
+    "Stonebrimmed Hat",
+    "Dorabyss",
+    "Missix Amulet",
+    "Cape of Pohdoog",
+    "Ancient Foggernaut Hammer",
+    "Benj Boots",
+    "Antumband",
+    "Nitekap",
+    "Vigilante Cape",
+    "Father Whupper Belt",
+    "Father Whupper Boots",
+    "Tal Kasha Nemes",
+    "Tal Kasha Head of Hair",
+    "Mumystiboots",
+    "Mumysring",
+    "Mumystorque",
+    "Moum-Ra's Hood",
+    "Ankhape",
+    "Sneerena Loincloth",
+    "Ringaeus",
+    "Captain Amakna Shield",
+    "Precious Shield",
+    "Ambuckler",
+    "Wunsupon",
+    "Upcykld",
+    "Cubist Shield",
+    "Stalak Shield",
+    "Anerice Mask",
+    "Anerice Cloak",
+    "Goulring",
+    "Goulboots",
+    "Forfut Hammer",
+    "Amulet of the Valiant Heart",
+    "Boots of the Valiant Heart",
+    "Amulet of the Bleeding Heart",
+    "Boots of the Bleeding Heart",
+    "Mask of the Salvatory Spirit",
+    "Mask of the Unsound Mind",
+    "Amulet of the Sharp Eye",
+    "Amulet of the Putrid Eye",
+    "Bontarian Shield",
+    "Brakmarian Shield",
+    "Ilyzaelle Amulet",
+    "Ilyzaelle Helmet",
+    "Dust Kickers",
+    "Soul-Blaze Mask",
+    "Ilyzaelle Daggers",
+    "Soul-Blaze Sword",
+    "Corrupted Bow",
+    "Burning Mask",
+    "Burning Cape",
+    "Volcanic Amulet",
+    "Volcanic Bag",
+    "Volcanic Clogs",
+    "Steelymace",
+    "Scapu Helm",
+    "Suspender Belt",
+    "Lavaring",
+    "Bluster Belt",
+    "Drowhirl Hat",
+    "Sucgunner Cape",
+    "Bethel's Panties",
+    "Micrab Slippers",
+    "Absoluti Cape",
+    "Celebring",
+    "Hirofant Necklace",
+    "Boot Boots",
+    "Grithril Ring",
+    "Grithril Helmet",
+    "Stubbeard",
+    "Freezammer Amulet",
+    "Rhineetle Helmet",
+    "Rhineetle Belt",
+    "Rhineetle Amulet",
+    "Rhineetle Bow",
+    "Scissors of Destiny",
+    "Buhorado Feather",
+    "Rykke Errel's Bravery",
+    "Paztek Sandals",
+    "Paztek Cloak",
+    "Paztek Mask",
+    "Chocomancer Belt",
+    "Chokao Mask",
+    "Crocobelt",
+    "Crocoshield",
+    "Misery's Treads",
+    "War's Treads",
+    "War's Helm",
+    "Servitude's Coat",
+    "Corruption's Engagement Ring",
+    "Corruption Pestilence",
+    "Pithy Treads",
+    "Bledger",
+    "Final Dawn",
+    "The Necromancer's Song",
+    "Gates of Bonta",
+    "Death of the Centoror",
+    "Skies of Black Lightning",
+    "Belladonna's Cruelty",
+    "Belladonna's Bitterness",
+    "Belladonna's Tenderness",
+    "Yaulbow",
+    "Dark Vlad's Flamberge",
+    "Dark Vlad's Tabard",
+    "Dark Vlad's Collar",
+  ];
+
+  const noExpensiveResourcesItemsLists = useMemo(() => {
+    const betaDataItemsWithNoExpensiveRes = betaData.allEquipment.filter(
+      (item) => {
+        let hasExpensiveResource = false;
+        if (item.recipe === undefined) {
+          return false;
+        }
+        if (item.name === "Henual's Ring") {
+          console.log("Henual's Ring Recipe: ", item.recipe);
+        }
+        for (const resource of item.recipe) {
+          if (expensiveResourcesIdList.includes(resource.item_ankama_id)) {
+            hasExpensiveResource = true;
+            break;
+          }
+        }
+        return !hasExpensiveResource;
+      }
+    );
+
+    if (
+      betaDataItemsWithNoExpensiveRes.filter(
+        (item) => item.name === "Henual's Ring"
+      ).length > 0
+    ) {
+      console.log("Henual ring found in the noexpensivelist");
+    } else {
+      console.log("Henual ring not found in the noexpensivelist");
+    }
+
+    return betaDataItemsWithNoExpensiveRes;
+  }, [betaData]);
+
+  console.log(
+    "Beta Data Items with Expensive Resources: ",
+    noExpensiveResourcesItemsLists
+      .filter((item) => wantedItemsListGoodAfterUpdate.includes(item.name))
+      .map((item) => {
+        return item.name;
+      })
+  );
+
   // TODO: Remove ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
   return (
